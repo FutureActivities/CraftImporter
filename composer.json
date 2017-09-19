@@ -1,0 +1,14 @@
+{
+    "name": "futureactivities/craft-importer",
+    "description": "Data importer for Craft and Craft Commerce",
+    "type": "craft-plugin",
+    "authors": [
+        {
+            "name": "Future Activities",
+            "email": "paul.blundell@nzime.com"
+        }
+    ],
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
