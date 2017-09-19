@@ -1,6 +1,6 @@
 # Craft Data Importer Plugin
 
-This is a small plugin to help importing data to Craft.
+This is a small plugin to help importing data to *Craft 2*.
 
 This plugin supports importing Entries, creating categories on the fly, and Commerce Products.
 
