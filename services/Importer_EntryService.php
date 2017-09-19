@@ -69,6 +69,9 @@ class Importer_EntryService extends BaseApplicationComponent
                     $values = explode(';', $value);
                     $valueIds = [];
                     foreach ($values AS $val) {
+                        $val = DbHelper::escapeParam(trim($val));
+                        if (empty($val)) continue;
+                        
                         $category = craft()->importer_category->findOrCreate($groupId, ucwords(trim($val)));
                         $valueIds[] = $category->id;
                     }
@@ -85,11 +88,11 @@ class Importer_EntryService extends BaseApplicationComponent
                     foreach ($values AS $val) {
                         $slug = StringHelper::toKebabCase($val);
                         $criteria = \Craft\craft()->elements->getCriteria(\Craft\ElementType::Entry);
-                        $criteria->title = $val;
+                        $criteria->title = DbHelper::escapeParam($val);
                         $additionalEntry = $criteria->first();
                         if ($additionalEntry) {
                             $additionalEntry = craft()->importer_entry->createEntry($slug, $sectionId);
-                            $additionalEntry->getContent()->title = $val;
+                            $additionalEntry->getContent()->title = DbHelper::escapeParam($val);
                             craft()->importer_entry->save($additionalEntry);
                         }
                         
