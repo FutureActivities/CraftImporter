@@ -12,10 +12,10 @@ class Importer_ImportService extends BaseApplicationComponent
             ))
             ->queryAll();
     }
-    
-    public function markAsProcessed($slug)
+
+    public function markAsProcessed($sku, $primaryKey = 'Product Code')
     {
         \Craft\craft()->db->createCommand()
-                ->update('importer', array('processed' => 1), '`Slug` = :slug', array(':slug' => $slug));
+                ->update('importer', array('processed' => 1), '`'.$primaryKey.'` = :sku', array(':sku' => $sku));
     }
 }

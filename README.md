@@ -22,7 +22,7 @@ Also make sure your table has the following 2 required columns (case is importan
 Run in the terminal with:
 
     php ./craft/app/etc/console/yiic importer run
-    
+
 For this to import entries out-of-the-box, your database table must have the following columns:
 
 - Slug
@@ -36,13 +36,12 @@ The value in the column can have multiple values by seperating with a semi-colon
 E.g: If you have a field that selects a Category option then you would enter:
 
     Category Name 1;Category Name 2;Category Name 3
-    
+
 The categories will be created automatically if they do not exist.
 
 *Note*: The data should use the title of categories, etc. and not the slugs. This is because
 if importing a new category - that slug obviously won't yet exist.
 
-    
 ## Parsing Fields
 
 The importer will automatically detect the field type and process as required.
@@ -70,19 +69,38 @@ Adapt the Importer_ImportService processRow function to the following:
     $product = craft()->importer_product->getBySlug($row['Slug']);
     if (is_null($product))
         $product = craft()->importer_product->createProduct($row['Slug'], self::SECTION);
-        
+
     $product->getContent()->title = $row['Name'];
-    
+
     // Remove columns not required
     unset($row['Slug'], $row['Name']);
-    
+
     // Loop through remaining columns
     craft()->importer_entry->parseFields($product, $row);
-    
+
     craft()->importer_product->save($product);
-    
+
 You may also want to create variants depending on the data being imported:
 
     $variant = craft()->importer_product->getVariantBySku('my-sku');
     if (is_null($variant))
         $variant = craft()->importer_product->createVariant($product, 'my-sku', 'my-variant', 10);
+
+## Importing Users
+
+This can also import Craft users.
+
+Adapt the Importer_ImportService processRow function to the following:
+
+    // Add any custom user attributes here
+    $attributes = [];
+
+    if (!$user = craft()->importer_user->getByEmail($row['Email']))
+        $user = craft()->importer_user->createUser($row['Email'], $row['Username'], $row['First Name'], $row['Last Name'], $attributes);
+
+    // Make any other edits you need to the User model here
+
+    craft()->importer_user->save($user);
+
+    // Optional assign to a group    
+    craft()->userGroups->assignUserToGroups($user->id, $row['GroupId']);
